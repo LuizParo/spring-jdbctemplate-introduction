@@ -35,6 +35,18 @@ public class EditoraDao {
         return key.intValue();
     }
     
+    public Editora findById(int id) {
+        return this.template.queryForObject("SELECT * FROM editora WHERE id = ?", new EditoraMapper(), id);
+    }
+    
+    public List<Editora> findByRazaoSocial(String razao) {
+        return this.template.query("SELECT * FROM editora WHERE razao_social like '%' ? '%'", new String[] {razao}, new EditoraMapper());
+    }
+    
+    public List<Editora> findByCidade(String cityOne, String cityTwo) {
+        return this.template.query("SELECT * FROM editora WHERE cidade IN (?, ?)", new EditoraMapper(), cityOne, cityTwo);
+    }
+    
     public List<Editora> findAll() {
         return this.template.query("SELECT * FROM editora", new EditoraMapper());
     }

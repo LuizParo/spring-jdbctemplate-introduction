@@ -15,6 +15,7 @@ public class EditoraMapper implements RowMapper<Editora> {
         editora.setId(rs.getInt("id"));
         editora.setRazaoSocial(rs.getString("razao_social"));
         editora.setEmail(rs.getString("email"));
+        editora.setCidade(rs.getString("cidade"));
         
         return editora;
     }

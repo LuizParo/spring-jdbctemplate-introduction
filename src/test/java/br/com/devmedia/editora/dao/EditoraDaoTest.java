@@ -40,11 +40,54 @@ public class EditoraDaoTest {
     }
     
     @Test
+    public void shouldFindEditoraById() {
+        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        this.editoraDao.save(editora);
+        
+        Editora editoraRecuperada = this.editoraDao.findById(editora.getId());
+        
+        Assert.assertNotNull(editoraRecuperada);
+        Assert.assertEquals(editora.getId(), editoraRecuperada.getId());
+    }
+    
+    @Test
+    public void shouldFindEditoraByCity() {
+        Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        Editora editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
+        
+        this.editoraDao.save(editoraOne);
+        this.editoraDao.save(editoraTwo);
+        
+        List<Editora> editoras = this.editoraDao.findByCidade(editoraOne.getCidade(), editoraTwo.getCidade());
+        
+        Assert.assertNotNull(editoras);
+        Assert.assertFalse(editoras.isEmpty());
+        Assert.assertEquals(2, editoras.size());
+        for (Editora editora : editoras) {
+            Assert.assertTrue(editora.getCidade().equals("Porto Alegre") || editora.getCidade().equals("Rio de Janeiro"));
+        }
+    }
+    
+    @Test
+    public void shouldFindEditoraByRazaoSocial() {
+        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
+        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
+        List<Editora> editoras = this.editoraDao.findByRazaoSocial("Editora");
+        
+        Assert.assertNotNull(editoras);
+        Assert.assertFalse(editoras.isEmpty());
+        Assert.assertEquals(2, editoras.size());
+        for (Editora editora : editoras) {
+            Assert.assertTrue(editora.getRazaoSocial().contains("Editora"));
+        }
+    }
+    
+    @Test
     public void shouldFindAllEditorasWithRowMapper() {
         this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
         this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
-        
         List<Editora> editoras = this.editoraDao.findAll();
+        
         Assert.assertNotNull(editoras);
         Assert.assertFalse(editoras.isEmpty());
         Assert.assertEquals(2, editoras.size());
