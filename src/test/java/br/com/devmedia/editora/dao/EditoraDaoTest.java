@@ -1,5 +1,7 @@
 package br.com.devmedia.editora.dao;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,5 +37,16 @@ public class EditoraDaoTest {
         Assert.assertTrue(generatedId > 0);
         Assert.assertNotNull(editora.getId());
         Assert.assertEquals(Integer.valueOf(generatedId), editora.getId());
+    }
+    
+    @Test
+    public void shouldFindAllEditorasWithRowMapper() {
+        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
+        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
+        
+        List<Editora> editoras = this.editoraDao.findAll();
+        Assert.assertNotNull(editoras);
+        Assert.assertFalse(editoras.isEmpty());
+        Assert.assertEquals(2, editoras.size());
     }
 }

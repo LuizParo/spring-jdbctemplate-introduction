@@ -1,6 +1,7 @@
 package br.com.devmedia.editora.dao;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import br.com.devmedia.editora.dao.mapper.EditoraMapper;
 import br.com.devmedia.editora.entity.Editora;
 
 @Repository
@@ -31,5 +33,9 @@ public class EditoraDao {
         editora.setId(key.intValue());
         
         return key.intValue();
+    }
+    
+    public List<Editora> findAll() {
+        return this.template.query("SELECT * FROM editora", new EditoraMapper());
     }
 }
