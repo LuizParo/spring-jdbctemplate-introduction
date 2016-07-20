@@ -92,4 +92,35 @@ public class EditoraDaoTest {
         Assert.assertFalse(editoras.isEmpty());
         Assert.assertEquals(2, editoras.size());
     }
+    
+    @Test
+    public void shouldCountAllEditoras() {
+        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
+        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
+        int count = this.editoraDao.count();
+        
+        Assert.assertEquals(2, count);
+    }
+    
+    @Test
+    public void shouldfindEmailById() {
+        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        
+        this.editoraDao.save(editora);
+        String email = this.editoraDao.findEmailById(editora.getId());
+        
+        Assert.assertNotNull(email);
+        Assert.assertEquals(editora.getEmail(), email);
+    }
+    
+    @Test
+    public void shouldFindAllEmails() {
+        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
+        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
+        List<String> emails = this.editoraDao.findAllEmails();
+        
+        Assert.assertNotNull(emails);
+        Assert.assertFalse(emails.isEmpty());
+        Assert.assertEquals(2, emails.size());
+    }
 }

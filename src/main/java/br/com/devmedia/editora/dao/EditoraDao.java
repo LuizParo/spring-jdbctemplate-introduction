@@ -17,7 +17,7 @@ import br.com.devmedia.editora.entity.Editora;
 @Repository
 @PropertySource("classpath:sql/editora.xml")
 public class EditoraDao {
-    
+
     @Autowired
     private JdbcTemplate template;
     
@@ -35,6 +35,15 @@ public class EditoraDao {
     
     @Value("${sql.findAll}")
     private String sqlFindAll;
+    
+    @Value("${sql.count}")
+    private String sqlCount;
+    
+    @Value("${sql.findEmailBy.id}")
+    private String sqlFindEmailById;
+    
+    @Value("${sql.sqlFindAllEmails}")
+    private String sqlFindAllEmails;
     
     public int insert(Editora editora) {
         return this.template.update(this.sqlInsert, editora.getRazaoSocial(), editora.getCidade(), editora.getEmail());
@@ -66,5 +75,17 @@ public class EditoraDao {
     
     public List<Editora> findAll() {
         return this.template.query(this.sqlFindAll, new EditoraMapper());
+    }
+    
+    public int count() {
+        return this.template.queryForObject(this.sqlCount, int.class);
+    }
+    
+    public String findEmailById(int id) {
+        return this.template.queryForObject(this.sqlFindEmailById, String.class, id);
+    }
+    
+    public List<String> findAllEmails() {
+        return this.template.queryForList(this.sqlFindAllEmails, String.class);
     }
 }

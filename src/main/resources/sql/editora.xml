@@ -30,4 +30,20 @@
 		SELECT *
 		FROM editora
 	</entry>
+	
+	<entry key="sql.count">
+		SELECT count(*)
+		FROM editora
+	</entry>
+	
+	<entry key="sql.findEmailBy.id">
+		SELECT email
+		FROM editora
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.sqlFindAllEmails">
+		SELECT email
+		FROM editora
+	</entry>
 </properties>
