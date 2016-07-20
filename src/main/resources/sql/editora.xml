@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>SQL EDITORA TABLE</comment>
+	
+	<entry key="sql.insert">
+		INSERT INTO editora(razao_social, cidade, email)
+		VALUES (?, ?, ?)
+	</entry>
+	
+	<entry key="sql.findBy.razaoSocial">
+		SELECT *
+		FROM editora
+		WHERE razao_social like '%' ? '%'
+	</entry>
+	
+	<entry key="sql.findBy.cidade">
+		SELECT *
+		FROM editora
+		WHERE cidade IN (?, ?)
+	</entry>
+	
+	<entry key="sql.findBy.id">
+		SELECT *
+		FROM editora
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.findAll">
+		SELECT *
+		FROM editora
+	</entry>
+</properties>
