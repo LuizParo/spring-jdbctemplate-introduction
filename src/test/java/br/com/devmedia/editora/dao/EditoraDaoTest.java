@@ -123,4 +123,46 @@ public class EditoraDaoTest {
         Assert.assertFalse(emails.isEmpty());
         Assert.assertEquals(2, emails.size());
     }
+    
+    @Test
+    public void shouldFindCidadeAndEmailById() {
+        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        this.editoraDao.save(editora);
+        List<String> cidadeAndEmail = this.editoraDao.findCidadeAndEmailById(editora.getId());
+        
+        Assert.assertNotNull(cidadeAndEmail);
+        Assert.assertFalse(cidadeAndEmail.isEmpty());
+        for (String string : cidadeAndEmail) {
+            Assert.assertTrue(editora.getCidade().equals(string) || editora.getEmail().equals(string));
+        }
+    }
+    
+    @Test
+    public void shouldFindEditoraWithCidadeAndEmailById() {
+        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        this.editoraDao.save(editora);
+        
+        Editora editoraRecuperada = this.editoraDao.findEditoraWithCidadeAndEmailById(editora.getId());
+        Assert.assertNotNull(editoraRecuperada);
+        Assert.assertNotNull(editoraRecuperada.getId());
+        Assert.assertEquals(editora.getCidade(), editoraRecuperada.getCidade());
+        Assert.assertEquals(editora.getEmail(), editoraRecuperada.getEmail());
+    }
+    
+    @Test
+    public void shouldFindCidadesAndEmails() {
+        Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        Editora editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
+        this.editoraDao.save(editoraOne);
+        this.editoraDao.save(editoraTwo);
+        
+        List<Editora> editoras = this.editoraDao.findCidadesAndEmails();
+        Assert.assertNotNull(editoras);
+        Assert.assertFalse(editoras.isEmpty());
+        Assert.assertEquals(2, editoras.size());
+        for (Editora editora : editoras) {
+            Assert.assertTrue(editoraOne.getCidade().equals(editora.getCidade()) || editoraTwo.getCidade().equals(editora.getCidade()));
+            Assert.assertTrue(editoraOne.getEmail().equals(editora.getEmail()) || editoraTwo.getEmail().equals(editora.getEmail()));
+        }
+    }
 }

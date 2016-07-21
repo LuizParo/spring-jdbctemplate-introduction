@@ -46,4 +46,15 @@
 		SELECT email
 		FROM editora
 	</entry>
+	
+	<entry key="sql.sqlFindCidadeAndEmailBy.Id">
+		SELECT id, cidade, email
+		FROM editora
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.sqlFindCidadesAndEmails">
+		SELECT id, cidade, email
+		FROM editora
+	</entry>
 </properties>

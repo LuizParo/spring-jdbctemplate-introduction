@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import br.com.devmedia.editora.dao.mapper.CidadeAndEmailEditoraMapper;
 import br.com.devmedia.editora.dao.mapper.EditoraMapper;
 import br.com.devmedia.editora.entity.Editora;
 
@@ -44,6 +45,12 @@ public class EditoraDao {
     
     @Value("${sql.sqlFindAllEmails}")
     private String sqlFindAllEmails;
+    
+    @Value("${sql.sqlFindCidadeAndEmailBy.Id}")
+    private String sqlFindCidadeAndEmailById;
+    
+    @Value("${sql.sqlFindCidadesAndEmails}")
+    private String sqlFindCidadesAndEmails;
     
     public int insert(Editora editora) {
         return this.template.update(this.sqlInsert, editora.getRazaoSocial(), editora.getCidade(), editora.getEmail());
@@ -87,5 +94,23 @@ public class EditoraDao {
     
     public List<String> findAllEmails() {
         return this.template.queryForList(this.sqlFindAllEmails, String.class);
+    }
+    
+    public List<String> findCidadeAndEmailById(int id) {
+        return this.template.queryForObject(this.sqlFindCidadeAndEmailById,
+                                            new Integer[] {id},
+                                            (rs, rowNum) -> {
+                                                String cidade = rs.getString("cidade");
+                                                String email = rs.getString("email");
+                                                return Arrays.asList(cidade, email);
+                                            });
+    }
+    
+    public Editora findEditoraWithCidadeAndEmailById(int id) {
+        return this.template.queryForObject(this.sqlFindCidadeAndEmailById, new Integer[] {id}, new CidadeAndEmailEditoraMapper());
+    }
+    
+    public List<Editora> findCidadesAndEmails() {
+        return this.template.query(this.sqlFindCidadesAndEmails, new CidadeAndEmailEditoraMapper());
     }
 }
