@@ -57,4 +57,14 @@
 		SELECT id, cidade, email
 		FROM editora
 	</entry>
+	
+	<entry key="sql.update">
+		UPDATE editora
+	    SET razao_social = ?, cidade = ?, email = ?
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.delete">
+		DELETE FROM editora WHERE id = ?
+	</entry>
 </properties>

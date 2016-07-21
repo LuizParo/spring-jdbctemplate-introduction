@@ -52,6 +52,12 @@ public class EditoraDao {
     @Value("${sql.sqlFindCidadesAndEmails}")
     private String sqlFindCidadesAndEmails;
     
+    @Value("${sql.update}")
+    private String sqlUpdate;
+    
+    @Value("${sql.delete}")
+    private String sqlDelete;
+    
     public int insert(Editora editora) {
         return this.template.update(this.sqlInsert, editora.getRazaoSocial(), editora.getCidade(), editora.getEmail());
     }
@@ -112,5 +118,17 @@ public class EditoraDao {
     
     public List<Editora> findCidadesAndEmails() {
         return this.template.query(this.sqlFindCidadesAndEmails, new CidadeAndEmailEditoraMapper());
+    }
+    
+    public int update(Editora editora) {
+        return this.template.update(this.sqlUpdate,
+                                    editora.getRazaoSocial(),
+                                    editora.getCidade(),
+                                    editora.getEmail(),
+                                    editora.getId());
+    }
+    
+    public int remove(Editora editora) {
+        return this.template.update(this.sqlDelete, editora.getId());
     }
 }

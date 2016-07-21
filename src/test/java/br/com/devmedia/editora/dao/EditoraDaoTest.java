@@ -3,6 +3,7 @@ package br.com.devmedia.editora.dao;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,24 @@ import br.com.devmedia.editora.entity.Editora;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = AppEditora.class)
 public class EditoraDaoTest {
+    private Editora editoraOne;
+    private Editora editoraTwo;
 
     @Autowired
     private EditoraDao editoraDao;
     
+    @Before
+    public void setUp() {
+        this.editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        this.editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
+        
+        this.editoraDao.save(this.editoraOne);
+        this.editoraDao.save(this.editoraTwo);
+    }
+    
     @Test
     public void shouldPersistEditora() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        Editora editora = new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com");
         int updatedRows = this.editoraDao.insert(editora);
         
         Assert.assertEquals(1, updatedRows);
@@ -31,7 +43,7 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldPersistEditoraGeneratingAnId() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        Editora editora = new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com");
         int generatedId = this.editoraDao.save(editora);
         
         Assert.assertTrue(generatedId > 0);
@@ -41,24 +53,15 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldFindEditoraById() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        this.editoraDao.save(editora);
-        
-        Editora editoraRecuperada = this.editoraDao.findById(editora.getId());
+        Editora editoraRecuperada = this.editoraDao.findById(this.editoraOne.getId());
         
         Assert.assertNotNull(editoraRecuperada);
-        Assert.assertEquals(editora.getId(), editoraRecuperada.getId());
+        Assert.assertEquals(this.editoraOne.getId(), editoraRecuperada.getId());
     }
     
     @Test
     public void shouldFindEditoraByCity() {
-        Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        Editora editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
-        
-        this.editoraDao.save(editoraOne);
-        this.editoraDao.save(editoraTwo);
-        
-        List<Editora> editoras = this.editoraDao.findByCidade(editoraOne.getCidade(), editoraTwo.getCidade());
+        List<Editora> editoras = this.editoraDao.findByCidade(this.editoraOne.getCidade(), this.editoraTwo.getCidade());
         
         Assert.assertNotNull(editoras);
         Assert.assertFalse(editoras.isEmpty());
@@ -70,8 +73,6 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldFindEditoraByRazaoSocial() {
-        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
-        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
         List<Editora> editoras = this.editoraDao.findByRazaoSocial("Editora");
         
         Assert.assertNotNull(editoras);
@@ -84,8 +85,6 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldFindAllEditorasWithRowMapper() {
-        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
-        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
         List<Editora> editoras = this.editoraDao.findAll();
         
         Assert.assertNotNull(editoras);
@@ -95,28 +94,20 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldCountAllEditoras() {
-        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
-        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
         int count = this.editoraDao.count();
-        
         Assert.assertEquals(2, count);
     }
     
     @Test
     public void shouldfindEmailById() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        
-        this.editoraDao.save(editora);
-        String email = this.editoraDao.findEmailById(editora.getId());
+        String email = this.editoraDao.findEmailById(this.editoraOne.getId());
         
         Assert.assertNotNull(email);
-        Assert.assertEquals(editora.getEmail(), email);
+        Assert.assertEquals(this.editoraOne.getEmail(), email);
     }
     
     @Test
     public void shouldFindAllEmails() {
-        this.editoraDao.save(new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com"));
-        this.editoraDao.save(new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com"));
         List<String> emails = this.editoraDao.findAllEmails();
         
         Assert.assertNotNull(emails);
@@ -126,43 +117,56 @@ public class EditoraDaoTest {
     
     @Test
     public void shouldFindCidadeAndEmailById() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        this.editoraDao.save(editora);
-        List<String> cidadeAndEmail = this.editoraDao.findCidadeAndEmailById(editora.getId());
+        List<String> cidadeAndEmail = this.editoraDao.findCidadeAndEmailById(this.editoraOne.getId());
         
         Assert.assertNotNull(cidadeAndEmail);
         Assert.assertFalse(cidadeAndEmail.isEmpty());
         for (String string : cidadeAndEmail) {
-            Assert.assertTrue(editora.getCidade().equals(string) || editora.getEmail().equals(string));
+            Assert.assertTrue(this.editoraOne.getCidade().equals(string) || this.editoraOne.getEmail().equals(string));
         }
     }
     
     @Test
     public void shouldFindEditoraWithCidadeAndEmailById() {
-        Editora editora = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        this.editoraDao.save(editora);
+        Editora editoraRecuperada = this.editoraDao.findEditoraWithCidadeAndEmailById(this.editoraOne.getId());
         
-        Editora editoraRecuperada = this.editoraDao.findEditoraWithCidadeAndEmailById(editora.getId());
         Assert.assertNotNull(editoraRecuperada);
         Assert.assertNotNull(editoraRecuperada.getId());
-        Assert.assertEquals(editora.getCidade(), editoraRecuperada.getCidade());
-        Assert.assertEquals(editora.getEmail(), editoraRecuperada.getEmail());
+        Assert.assertEquals(this.editoraOne.getCidade(), editoraRecuperada.getCidade());
+        Assert.assertEquals(this.editoraOne.getEmail(), editoraRecuperada.getEmail());
     }
     
     @Test
     public void shouldFindCidadesAndEmails() {
-        Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
-        Editora editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
-        this.editoraDao.save(editoraOne);
-        this.editoraDao.save(editoraTwo);
-        
         List<Editora> editoras = this.editoraDao.findCidadesAndEmails();
+        
         Assert.assertNotNull(editoras);
         Assert.assertFalse(editoras.isEmpty());
         Assert.assertEquals(2, editoras.size());
         for (Editora editora : editoras) {
-            Assert.assertTrue(editoraOne.getCidade().equals(editora.getCidade()) || editoraTwo.getCidade().equals(editora.getCidade()));
-            Assert.assertTrue(editoraOne.getEmail().equals(editora.getEmail()) || editoraTwo.getEmail().equals(editora.getEmail()));
+            Assert.assertTrue(this.editoraOne.getCidade().equals(editora.getCidade()) || this.editoraTwo.getCidade().equals(editora.getCidade()));
+            Assert.assertTrue(this.editoraOne.getEmail().equals(editora.getEmail()) || this.editoraTwo.getEmail().equals(editora.getEmail()));
         }
+    }
+    
+    @Test
+    public void testUpdateEditora() {
+        Editora editoraToBeUpdated = new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com");
+        editoraToBeUpdated.setId(this.editoraOne.getId());
+        
+        int rowsUpdated = this.editoraDao.update(editoraToBeUpdated);
+        Assert.assertEquals(1, rowsUpdated);
+        
+        Editora editoraUpdated = this.editoraDao.findById(this.editoraOne.getId());
+        Assert.assertEquals(editoraUpdated.getId(), this.editoraOne.getId());
+        Assert.assertNotEquals(editoraUpdated.getRazaoSocial(), this.editoraOne.getRazaoSocial());
+        Assert.assertNotEquals(editoraUpdated.getCidade(), this.editoraOne.getCidade());
+        Assert.assertNotEquals(editoraUpdated.getEmail(), this.editoraOne.getEmail());
+    }
+    
+    @Test
+    public void testRemoveEditora() {
+        int rowsDeleted = this.editoraDao.remove(this.editoraOne);
+        Assert.assertEquals(1, rowsDeleted);
     }
 }
