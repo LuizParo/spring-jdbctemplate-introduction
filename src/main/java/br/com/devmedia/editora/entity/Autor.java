@@ -1,10 +1,22 @@
 package br.com.devmedia.editora.entity;
 
+import java.util.Objects;
+
 public class Autor {
     private Integer id;
     private String nome;
     private String email;
     private Editora editora;
+    
+    public Autor() {
+        // default constructor
+    }
+
+    public Autor(String nome, String email, Editora editora) {
+        this.nome = nome;
+        this.email = email;
+        this.editora = Objects.requireNonNull(editora, "Editora must not be null!");
+    }
 
     public Integer getId() {
         return id;
@@ -35,7 +47,7 @@ public class Autor {
     }
 
     public void setEditora(Editora editora) {
-        this.editora = editora;
+        this.editora = Objects.requireNonNull(editora, "Editora must not be null!");
     }
 
     @Override
