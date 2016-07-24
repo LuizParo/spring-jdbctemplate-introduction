@@ -56,9 +56,6 @@ public class AutorDaoTest {
     public void shouldNotInsertAutorWithoutEditora() {
         Autor autor = new Autor("Ricardo da Silva", "ricardos@email.com", null);
         this.autorDao.save(autor);
-        
-        Assert.assertNotNull(autor.getId());
-        Assert.assertTrue(autor.getId() > 0);
     }
     
     @Test
@@ -72,5 +69,39 @@ public class AutorDaoTest {
         for (Autor autor : autores) {
             Assert.assertNotNull(autor.getEditora());
         }
+    }
+    
+    @Test
+    public void shouldFindAutoresByEditoraWithRowMapper() {
+        List<Autor> autores = this.autorDao.findAutoresByEditora(this.editoraOne);
+        
+        Assert.assertNotNull(autores);
+        Assert.assertFalse(autores.isEmpty());
+        Assert.assertEquals(1, autores.size());
+        
+        for (Autor autor : autores) {
+            Assert.assertNotNull(autor.getEditora());
+        }
+    }
+    
+    @Test
+    public void shouldUpdateAutor() {
+        Autor autorToBeUpdated = new Autor("José da Silva", "joses@email.com", this.editoraTwo);
+        autorToBeUpdated.setId(this.autorOne.getId());
+        
+        int rowsUpdated = this.autorDao.update(autorToBeUpdated);
+        Assert.assertEquals(1, rowsUpdated);
+        
+        Autor autorUpdated = this.autorDao.findById(this.autorOne.getId());
+        Assert.assertEquals(autorUpdated.getId(), this.autorOne.getId());
+        Assert.assertNotEquals(this.autorOne.getNome(), autorUpdated.getNome());
+        Assert.assertNotEquals(this.autorOne.getEmail(), autorUpdated.getEmail());
+        Assert.assertNotEquals(this.autorOne.getEditora(), autorUpdated.getEditora());
+    }
+    
+    @Test
+    public void shouldRemoveAutor() {
+        int rowsDeleted = this.autorDao.remove(this.autorOne);
+        Assert.assertEquals(1, rowsDeleted);
     }
 }

@@ -7,4 +7,29 @@
 		SELECT *
 		FROM autor
 	</entry>
+	
+	<entry key="sql.autor.findBy.id">
+		SELECT *
+		FROM autor
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.autor.findAutoresBy.editora">
+		SELECT a.id, a.nome, a.email, a.id_editora,
+		       e.razao_social, e.cidade, e.email AS email_editora
+		FROM autor a
+		INNER JOIN editora e ON a.id_editora = e.id
+		WHERE e.razao_social = ?
+	</entry>
+	
+	<entry key="sql.autor.update">
+		UPDATE autor
+		SET nome = ?, email = ?, id_editora = ?
+		WHERE id = ?
+	</entry>
+	
+	<entry key="sql.autor.delete">
+		DELETE FROM autor
+		WHERE id = ?
+	</entry>
 </properties>

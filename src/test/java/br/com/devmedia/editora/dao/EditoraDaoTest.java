@@ -99,7 +99,7 @@ public class EditoraDaoTest {
     }
     
     @Test
-    public void shouldfindEmailById() {
+    public void shouldFindEmailById() {
         String email = this.editoraDao.findEmailById(this.editoraOne.getId());
         
         Assert.assertNotNull(email);
@@ -150,7 +150,7 @@ public class EditoraDaoTest {
     }
     
     @Test
-    public void testUpdateEditora() {
+    public void shouldUpdateEditora() {
         Editora editoraToBeUpdated = new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com");
         editoraToBeUpdated.setId(this.editoraOne.getId());
         
@@ -159,13 +159,13 @@ public class EditoraDaoTest {
         
         Editora editoraUpdated = this.editoraDao.findById(this.editoraOne.getId());
         Assert.assertEquals(editoraUpdated.getId(), this.editoraOne.getId());
-        Assert.assertNotEquals(editoraUpdated.getRazaoSocial(), this.editoraOne.getRazaoSocial());
-        Assert.assertNotEquals(editoraUpdated.getCidade(), this.editoraOne.getCidade());
-        Assert.assertNotEquals(editoraUpdated.getEmail(), this.editoraOne.getEmail());
+        Assert.assertNotEquals(this.editoraOne.getRazaoSocial(), editoraUpdated.getRazaoSocial());
+        Assert.assertNotEquals(this.editoraOne.getCidade(), editoraUpdated.getCidade());
+        Assert.assertNotEquals(this.editoraOne.getEmail(), editoraUpdated.getEmail());
     }
     
     @Test
-    public void testRemoveEditora() {
+    public void shouldRemoveEditora() {
         int rowsDeleted = this.editoraDao.remove(this.editoraOne);
         Assert.assertEquals(1, rowsDeleted);
     }

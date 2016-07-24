@@ -62,7 +62,7 @@ public class Editora {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Editora))
             return false;
         Editora other = (Editora) obj;
         if (id == null) {
