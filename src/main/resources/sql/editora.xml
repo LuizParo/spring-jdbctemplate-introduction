@@ -67,4 +67,13 @@
 	<entry key="sql.delete">
 		DELETE FROM editora WHERE id = ?
 	</entry>
+	
+	<entry key="sql.findEditoraWithAutores">
+		SELECT e.id, e.razao_social, e.cidade, e.email,
+		       a.id AS id_autor, a.nome, a.email AS email_autor
+		FROM editora e
+		INNER JOIN autor a ON e.id = a.id_editora
+		WHERE e.id = ?
+		LIMIT ?, ?
+	</entry>
 </properties>

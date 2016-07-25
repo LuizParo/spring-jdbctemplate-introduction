@@ -1,7 +1,9 @@
 package br.com.devmedia.editora.dao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.devmedia.editora.dao.mapper.CidadeAndEmailEditoraMapper;
 import br.com.devmedia.editora.dao.mapper.EditoraMapper;
+import br.com.devmedia.editora.entity.Autor;
 import br.com.devmedia.editora.entity.Editora;
 
 @Repository
@@ -57,6 +60,9 @@ public class EditoraDao {
     
     @Value("${sql.delete}")
     private String sqlDelete;
+    
+    @Value("${sql.findEditoraWithAutores}")
+    private String sqlFindEditoraWithAutores;
     
     public int insert(Editora editora) {
         return this.template.update(this.sqlInsert, editora.getRazaoSocial(), editora.getCidade(), editora.getEmail());
@@ -130,5 +136,34 @@ public class EditoraDao {
     
     public int remove(Editora editora) {
         return this.template.update(this.sqlDelete, editora.getId());
+    }
+    
+    public Editora findEditoraWithAutores(int id, int page, int size) {
+        List<Map<String,Object>> rows = this.template.queryForList(this.sqlFindEditoraWithAutores, id, page * size, size);
+        
+        Editora editora = null;
+        List<Autor> autores = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            if(editora == null) {
+                editora = new Editora();
+                editora.setId((Integer) row.get("id"));
+                editora.setRazaoSocial((String) row.get("razao_social"));
+                editora.setCidade((String) row.get("cidade"));
+                editora.setEmail((String) row.get("email"));
+            }
+            
+            Autor autor = new Autor();
+            autor.setId((Integer) row.get("id_autor"));
+            autor.setNome((String) row.get("nome"));
+            autor.setEmail((String) row.get("email_autor"));
+            autor.setEditora(editora);
+            
+            autores.add(autor);
+        }
+        if(editora != null) {
+            editora.setAutores(autores);
+            return editora;
+        }
+        return null;
     }
 }

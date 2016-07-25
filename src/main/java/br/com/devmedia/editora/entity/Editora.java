@@ -1,10 +1,14 @@
 package br.com.devmedia.editora.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Editora {
     private Integer id;
     private String razaoSocial;
     private String cidade;
     private String email;
+    private List<Autor> autores = new ArrayList<>();
 
     public Editora() {
         // default constructor
@@ -46,6 +50,14 @@ public class Editora {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    public List<Autor> getAutores() {
+        return autores;
+    }
+    
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
     }
 
     @Override

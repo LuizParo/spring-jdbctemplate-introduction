@@ -1,5 +1,6 @@
 package br.com.devmedia.editora.dao;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.devmedia.editora.AppEditora;
+import br.com.devmedia.editora.entity.Autor;
 import br.com.devmedia.editora.entity.Editora;
 
 @Transactional
@@ -23,6 +25,9 @@ public class EditoraDaoTest {
 
     @Autowired
     private EditoraDao editoraDao;
+    
+    @Autowired
+    private AutorDao autorDao;
     
     @Before
     public void setUp() {
@@ -168,5 +173,38 @@ public class EditoraDaoTest {
     public void shouldRemoveEditora() {
         int rowsDeleted = this.editoraDao.remove(this.editoraOne);
         Assert.assertEquals(1, rowsDeleted);
+    }
+    
+    @Test
+    public void shouldFindEditoraWithAutores() {
+        List<Autor> autores = Arrays.asList(new Autor("Aline da Silva", "alines@email.com", this.editoraOne),
+                new Autor("João da Silva", "joaos@email.com", this.editoraOne),
+                new Autor("Alison Rodrigues", "alisonr@email.com", this.editoraOne),
+                new Autor("Maria da Silva", "marias@email.com", this.editoraOne),
+                new Autor("Roberto da Silva", "robertos@email.com", this.editoraOne),
+                new Autor("Rafael da Silva", "rafaels@email.com", this.editoraOne),
+                new Autor("Mario da Silva", "marios@email.com", this.editoraOne),
+                new Autor("Ricardo da Silva", "ricardos@email.com", this.editoraOne),
+                new Autor("José da Silva", "joses@email.com", this.editoraOne),
+                new Autor("Pedro da Silva", "pedros@email.com", this.editoraOne)
+        );
+        for (Autor autor : autores) {
+            this.autorDao.save(autor);
+        }
+        
+        for(int i = 0; i < (autores.size() / 2); i++) {
+            Editora editoraWithAutores = this.editoraDao.findEditoraWithAutores(this.editoraOne.getId(), i, 2);
+            Assert.assertNotNull(editoraWithAutores);
+            Assert.assertNotNull(editoraWithAutores.getId());
+            Assert.assertNotNull(editoraWithAutores.getAutores());
+            Assert.assertFalse(editoraWithAutores.getAutores().isEmpty());
+            Assert.assertEquals(2, editoraWithAutores.getAutores().size());
+            
+            for (Autor autor : editoraWithAutores.getAutores()) {
+                Assert.assertNotNull(autor.getId());
+                Assert.assertNotNull(autor.getEditora());
+            }
+        }
+        
     }
 }
