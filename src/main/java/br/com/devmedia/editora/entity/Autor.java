@@ -1,5 +1,7 @@
 package br.com.devmedia.editora.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Autor {
@@ -7,6 +9,7 @@ public class Autor {
     private String nome;
     private String email;
     private Editora editora;
+    private List<Livro> livros = new ArrayList<>();
     
     public Autor() {
         // default constructor
@@ -48,6 +51,14 @@ public class Autor {
 
     public void setEditora(Editora editora) {
         this.editora = Objects.requireNonNull(editora, "Editora must not be null!");
+    }
+    
+    public List<Livro> getLivros() {
+        return livros;
+    }
+    
+    public void setLivros(List<Livro> livros) {
+        this.livros = livros;
     }
 
     @Override
