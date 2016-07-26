@@ -104,4 +104,12 @@ public class AutorDaoTest {
         int rowsDeleted = this.autorDao.remove(this.autorOne);
         Assert.assertEquals(1, rowsDeleted);
     }
+    
+    @Test
+    public void shouldGetIdAutorByNome() {
+        Integer idRecovered = this.autorDao.getIdByNome(this.autorOne.getNome());
+        
+        Assert.assertNotNull(idRecovered);
+        Assert.assertEquals(idRecovered, this.autorOne.getId());
+    }
 }

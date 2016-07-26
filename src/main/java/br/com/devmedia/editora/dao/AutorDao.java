@@ -43,6 +43,9 @@ public class AutorDao {
     @Value("${sql.autor.delete}")
     private String sqlDelete;
     
+    @Value("${sql.autor.getIdByNome}")
+    private String sqlGetIdByNome;
+    
     @Autowired
     public void setDataSource(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
@@ -86,5 +89,9 @@ public class AutorDao {
     
     public int remove(Autor autor) {
         return this.template.update(this.sqlDelete, autor.getId());
+    }
+
+    public Integer getIdByNome(String nome) {
+        return this.template.queryForObject(this.sqlGetIdByNome, Integer.class, nome);
     }
 }

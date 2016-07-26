@@ -6,23 +6,26 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import br.com.devmedia.editora.entity.Livro;
+import br.com.devmedia.editora.entity.LivroAutor;
 
 @Repository
-public class LivroDao {
-    
-    @Autowired
+public class LivroAutorDao {
     private JdbcTemplate template;
     
-    public Livro save(Livro livro) {
+    @Autowired
+    public LivroAutorDao(JdbcTemplate template) {
+        this.template = template;
+    }
+    
+    public LivroAutor save(LivroAutor livroAutor) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(this.template)
-                .withTableName("livro")
-                .usingColumns("titulo", "edicao", "paginas")
+                .withTableName("livro_autor")
+                .usingColumns("id_livro", "id_autor")
                 .usingGeneratedKeyColumns("id");
         
-        Number key = insert.executeAndReturnKey(new BeanPropertySqlParameterSource(livro));
-        livro.setId(key.intValue());
+        Number key = insert.executeAndReturnKey(new BeanPropertySqlParameterSource(livroAutor));
+        livroAutor.setId(key.intValue());
         
-        return livro;
+        return livroAutor;
     }
 }

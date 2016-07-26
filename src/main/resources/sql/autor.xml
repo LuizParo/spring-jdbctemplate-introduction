@@ -32,4 +32,10 @@
 		DELETE FROM autor
 		WHERE id = ?
 	</entry>
+	
+	<entry key="sql.autor.getIdByNome">
+		SELECT id
+		FROM autor
+		WHERE nome = ?
+	</entry>
 </properties>
