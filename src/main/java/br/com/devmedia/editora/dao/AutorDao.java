@@ -1,6 +1,8 @@
 package br.com.devmedia.editora.dao;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.sql.DataSource;
@@ -18,6 +20,7 @@ import br.com.devmedia.editora.dao.mapper.AutorMapper;
 import br.com.devmedia.editora.dao.mapper.AutorWithEditoraMapper;
 import br.com.devmedia.editora.entity.Autor;
 import br.com.devmedia.editora.entity.Editora;
+import br.com.devmedia.editora.entity.Livro;
 
 @Repository
 @PropertySource("classpath:sql/autor.xml")
@@ -45,6 +48,9 @@ public class AutorDao {
     
     @Value("${sql.autor.getIdByNome}")
     private String sqlGetIdByNome;
+    
+    @Value("${sql.autor.findAutorWithLivros}")
+    private String sqlFindAutorWithLivros;
     
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -93,5 +99,39 @@ public class AutorDao {
 
     public Integer getIdByNome(String nome) {
         return this.template.queryForObject(this.sqlGetIdByNome, Integer.class, nome);
+    }
+    
+    public Autor findAutorWithLivros(int id) {
+        Autor autor = null;
+        List<Livro> livros = new ArrayList<>();
+        
+        List<Map<String, Object>> rows = this.template.queryForList(this.sqlFindAutorWithLivros, Objects.requireNonNull(id, "id for Autor cannot be null"));
+        for (Map<String, Object> row : rows) {
+            if(autor == null) {
+                autor = new Autor();
+                autor.setId((Integer)row.get("id"));
+                autor.setNome((String)row.get("nome"));
+                autor.setEmail((String)row.get("email_autor"));
+            }
+            Editora editora = new Editora();
+            editora.setId((Integer) row.get("id_editora"));
+            editora.setRazaoSocial((String) row.get("razao_social"));
+            editora.setCidade((String) row.get("cidade"));
+            editora.setEmail((String) row.get("email_editora"));
+            autor.setEditora(editora);
+            
+            Livro livro = new Livro();
+            livro.setId((Integer) row.get("id_livro"));
+            livro.setTitulo((String) row.get("titulo"));
+            livro.setEdicao((Integer) row.get("edicao"));
+            livro.setPaginas((Integer) row.get("paginas"));
+            
+            livros.add(livro);
+        }
+        if(autor != null) {
+            autor.setLivros(livros);
+        }
+        
+        return autor;
     }
 }

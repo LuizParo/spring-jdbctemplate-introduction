@@ -21,6 +21,11 @@ public class Autor {
         this.editora = Objects.requireNonNull(editora, "Editora must not be null!");
     }
 
+    public Autor(Integer id, String nome, String email) {
+        this(nome, email, null);
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

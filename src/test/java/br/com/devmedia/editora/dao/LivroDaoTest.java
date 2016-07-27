@@ -32,10 +32,10 @@ public class LivroDaoTest {
     private EditoraDao editoraDao;
     
     @Autowired
-    private AutorDao autorDao;
+    private AutorDao authorDao;
     
     @Autowired
-    private LivroAutorDao livroAutorDao;
+    private LivroAutorDao bookAuthorDao;
 
     @Before
     public void setUp() {
@@ -64,10 +64,10 @@ public class LivroDaoTest {
                                             new Autor("João da Silva", "joaos@email.com", editoraTwo));
         
         for (Autor author : authors) {
-            this.autorDao.save(author);
+            this.authorDao.save(author);
             
             LivroAutor bookAuthor = new LivroAutor(this.bookOne.getId(), author.getId());
-            this.livroAutorDao.save(bookAuthor);
+            this.bookAuthorDao.save(bookAuthor);
         }
         
         Livro bookWithAuthors = this.bookDao.findLivroWithAutores(this.bookOne.getId());

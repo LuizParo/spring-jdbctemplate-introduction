@@ -38,4 +38,15 @@
 		FROM autor
 		WHERE nome = ?
 	</entry>
+	
+	<entry key="sql.autor.findAutorWithLivros">
+		SELECT a.id, a.nome, a.email AS email_autor,
+		       e.id AS id_editora, e.razao_social, e.cidade, e.email AS email_editora,
+		       l.id AS id_livro, l.titulo, l.edicao, l.paginas
+		FROM autor a
+		INNER JOIN livro_autor la ON la.id_autor = a.id
+		INNER JOIN livro l ON l.id = la.id_livro
+		INNER JOIN editora e ON e.id = a.id_editora
+		WHERE a.id = ?
+	</entry>
 </properties>
