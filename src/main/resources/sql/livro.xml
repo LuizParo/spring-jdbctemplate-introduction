@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>SQL LIVRO TABLE</comment>
+	
+	<entry key="sql.livro.findLivroWithAutores">
+		SELECT l.id, l.titulo, l.edicao, l.paginas,
+		       a.id AS id_autor, a.nome, a.email AS emai_autor,
+		       e.id AS id_editora, e.razao_social, e.cidade, e.email AS email_editora
+		FROM livro l
+		INNER JOIN livro_autor la ON la.id_livro = l.id
+		INNER JOIN autor a ON a.id = la.id_autor
+		INNER JOIN editora e ON a.id_editora = e.id
+		WHERE l.id = ?
+	</entry>
+</properties>
