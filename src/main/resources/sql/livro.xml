@@ -14,9 +14,27 @@
 		WHERE l.id = ?
 	</entry>
 	
-	<entry key="sql.livro.findByEdicao">
+	<entry key="sql.livro.findBy.id">
+		SELECT *
+		FROM livro
+		WHERE id = :id
+	</entry>
+	
+	<entry key="sql.livro.findBy.edicao">
 		SELECT *
 		FROM livro
 		WHERE edicao = :edicao
+	</entry>
+	
+	<entry key="sql.livro.findBy.paginas">
+		SELECT *
+		FROM livro
+		WHERE paginas BETWEEN :minimum AND :maximum
+	</entry>
+	
+	<entry key="sql.livro.update">
+		UPDATE livro
+		SET titulo = :titulo, edicao = :edicao, paginas = :paginas
+		WHERE id = :id
 	</entry>
 </properties>

@@ -82,13 +82,48 @@ public class LivroDaoTest {
     }
     
     @Test
-    public void shouldFindLivroByEdicao() {
-        List<Livro> books = this.bookDao.findByEdicao(this.bookOne.getEdicao());
+    public void shouldFindLivroById() {
+        Livro book = this.bookDao.findById(this.bookOne.getId());
+        
+        Assert.assertNotNull(book);
+        Assert.assertNotNull(book.getId());
+    }
+    
+    @Test
+    public void shouldFindLivrosByEdicao() {
+        List<Livro> books = this.bookDao.findLivrosByEdicao(this.bookOne.getEdicao());
         
         Assert.assertNotNull(books);
         Assert.assertFalse(books.isEmpty());
         for (Livro book : books) {
             Assert.assertEquals(book.getEdicao(), this.bookOne.getEdicao());
         }
+    }
+    
+    @Test
+    public void shouldFindLivrosByPaginas() {
+        List<Livro> books = this.bookDao.findLivrosByPaginas(this.bookOne.getPaginas(), this.bookOne.getPaginas() + 50);
+        
+        Assert.assertNotNull(books);
+        Assert.assertFalse(books.isEmpty());
+        for (Livro book : books) {
+            Assert.assertTrue(book.getPaginas() >= this.bookOne.getPaginas() ||
+                              book.getPaginas() <= this.bookOne.getPaginas());
+        }
+    }
+    
+    @Test
+    public void shouldUpdateLivro() {
+        Livro bookToBeUpdated = new Livro("Learn Spring Framework 4", 4, 155);
+        bookToBeUpdated.setId(this.bookOne.getId());
+        
+        int rowsUpdated = this.bookDao.update(bookToBeUpdated);
+        Assert.assertEquals(1, rowsUpdated);
+        
+        Livro bookUpdated = this.bookDao.findById(this.bookOne.getId());
+        Assert.assertEquals(bookUpdated.getId(), this.bookOne.getId());
+        Assert.assertNotEquals(this.bookOne.getTitulo(), bookUpdated.getTitulo());
+        Assert.assertNotEquals(this.bookOne.getEdicao(), bookUpdated.getEdicao());
+        Assert.assertNotEquals(this.bookOne.getPaginas(), bookUpdated.getPaginas());
     }
 }

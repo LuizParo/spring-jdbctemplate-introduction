@@ -32,8 +32,17 @@ public class LivroDao {
     @Value("${sql.livro.findLivroWithAutores}")
     private String sqlFindLivroWithAutores;
     
-    @Value("${sql.livro.findByEdicao}")
+    @Value("${sql.livro.findBy.id}")
+    private String sqlFindLivroById;
+    
+    @Value("${sql.livro.findBy.edicao}")
     private String sqlFindLivroByEdicao;
+    
+    @Value("${sql.livro.findBy.paginas}")
+    private String sqlFindByPaginas;
+    
+    @Value("${sql.livro.update}")
+    private String sqlUpdate;
     
     @Autowired
     public LivroDao(DataSource dataSource) {
@@ -86,9 +95,32 @@ public class LivroDao {
         return livro;
     }
     
-    public List<Livro> findByEdicao(int edicao) {
+    public Livro findById(Integer id) {
+        return this.namedParameter.queryForObject(this.sqlFindLivroById,
+                new MapSqlParameterSource("id", id),
+                new LivroMapper());
+    }
+    
+    public List<Livro> findLivrosByEdicao(int edicao) {
         return this.namedParameter.query(this.sqlFindLivroByEdicao,
                                          new MapSqlParameterSource("edicao", edicao),
                                          new LivroMapper());
+    }
+    
+    public List<Livro> findLivrosByPaginas(int min, int max) {
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("minimum", min).addValue("maximum", max);
+        
+        return this.namedParameter.query(this.sqlFindByPaginas,
+                sqlParameterSource,
+                new LivroMapper());
+    }
+    
+    public int update(Livro livro) {
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", livro.getId())
+                .addValue("titulo", livro.getTitulo())
+                .addValue("edicao", livro.getEdicao())
+                .addValue("paginas", livro.getPaginas());
+        
+        return this.namedParameter.update(this.sqlUpdate, sqlParameterSource);
     }
 }
