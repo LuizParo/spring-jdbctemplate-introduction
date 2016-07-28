@@ -80,4 +80,15 @@ public class LivroDaoTest {
             Assert.assertNotNull(author.getId());
         }
     }
+    
+    @Test
+    public void shouldFindLivroByEdicao() {
+        List<Livro> books = this.bookDao.findByEdicao(this.bookOne.getEdicao());
+        
+        Assert.assertNotNull(books);
+        Assert.assertFalse(books.isEmpty());
+        for (Livro book : books) {
+            Assert.assertEquals(book.getEdicao(), this.bookOne.getEdicao());
+        }
+    }
 }

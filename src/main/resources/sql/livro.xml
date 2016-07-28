@@ -13,4 +13,10 @@
 		INNER JOIN editora e ON a.id_editora = e.id
 		WHERE l.id = ?
 	</entry>
+	
+	<entry key="sql.livro.findByEdicao">
+		SELECT *
+		FROM livro
+		WHERE edicao = :edicao
+	</entry>
 </properties>
