@@ -44,6 +44,9 @@ public class LivroDao {
     @Value("${sql.livro.update}")
     private String sqlUpdate;
     
+    @Value("${sql.livro.findBy.tituloAndEdicao}")
+    private String sqlFindByTitutloAndEdicao;
+    
     @Autowired
     public LivroDao(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
@@ -115,6 +118,14 @@ public class LivroDao {
                 new LivroMapper());
     }
     
+    public Livro findByTitutloAndEdicao(String titulo, int edicao) {
+        Livro livro = new Livro(titulo, edicao);
+        
+        return this.namedParameter.queryForObject(this.sqlFindByTitutloAndEdicao,
+                new BeanPropertySqlParameterSource(livro),
+                new LivroMapper());
+    }
+    
     public int update(Livro livro) {
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", livro.getId())
                 .addValue("titulo", livro.getTitulo())
@@ -122,5 +133,9 @@ public class LivroDao {
                 .addValue("paginas", livro.getPaginas());
         
         return this.namedParameter.update(this.sqlUpdate, sqlParameterSource);
+    }
+    
+    public int updateWithLivroAsNamedParameter(Livro livro) {
+        return this.namedParameter.update(this.sqlUpdate, new BeanPropertySqlParameterSource(livro));
     }
 }

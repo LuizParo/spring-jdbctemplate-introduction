@@ -32,6 +32,13 @@
 		WHERE paginas BETWEEN :minimum AND :maximum
 	</entry>
 	
+	<entry key="sql.livro.findBy.tituloAndEdicao">
+		SELECT *
+		FROM livro
+		WHERE titulo = :titulo
+		AND edicao = :edicao
+	</entry>
+	
 	<entry key="sql.livro.update">
 		UPDATE livro
 		SET titulo = :titulo, edicao = :edicao, paginas = :paginas

@@ -54,7 +54,7 @@ public class LivroDaoTest {
     }
     
     @Test
-    public void testFindLivroWithAutores() {
+    public void shouldFindLivroWithAutores() {
         Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
         Editora editoraTwo = new Editora("Editora Copacabana Ltda.", "Rio de Janeiro", "contato@ed-copacabana.com");
         this.editoraDao.save(editoraOne);
@@ -113,11 +113,37 @@ public class LivroDaoTest {
     }
     
     @Test
+    public void shouldFindLivroByTitutloAndEdicao() {
+        Livro bookRecovered = this.bookDao.findByTitutloAndEdicao(this.bookOne.getTitulo(), this.bookOne.getEdicao());
+        
+        Assert.assertNotNull(bookRecovered);
+        Assert.assertNotNull(bookRecovered.getId());
+        Assert.assertEquals(this.bookOne.getId(), bookRecovered.getId());
+        Assert.assertEquals(this.bookOne.getTitulo(), bookRecovered.getTitulo());
+        Assert.assertEquals(this.bookOne.getEdicao(), bookRecovered.getEdicao());
+    }
+    
+    @Test
     public void shouldUpdateLivro() {
         Livro bookToBeUpdated = new Livro("Learn Spring Framework 4", 4, 155);
         bookToBeUpdated.setId(this.bookOne.getId());
         
         int rowsUpdated = this.bookDao.update(bookToBeUpdated);
+        Assert.assertEquals(1, rowsUpdated);
+        
+        Livro bookUpdated = this.bookDao.findById(this.bookOne.getId());
+        Assert.assertEquals(bookUpdated.getId(), this.bookOne.getId());
+        Assert.assertNotEquals(this.bookOne.getTitulo(), bookUpdated.getTitulo());
+        Assert.assertNotEquals(this.bookOne.getEdicao(), bookUpdated.getEdicao());
+        Assert.assertNotEquals(this.bookOne.getPaginas(), bookUpdated.getPaginas());
+    }
+    
+    @Test
+    public void shouldUpdateLivroUsingObjectAsNamedParameter() {
+        Livro bookToBeUpdated = new Livro("Learn Spring Framework 4", 4, 155);
+        bookToBeUpdated.setId(this.bookOne.getId());
+        
+        int rowsUpdated = this.bookDao.updateWithLivroAsNamedParameter(bookToBeUpdated);
         Assert.assertEquals(1, rowsUpdated);
         
         Livro bookUpdated = this.bookDao.findById(this.bookOne.getId());

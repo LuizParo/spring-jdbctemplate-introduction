@@ -14,9 +14,13 @@ public class Livro {
         // default constructor
     }
 
-    public Livro(String titulo, Integer edicao, Integer paginas) {
+    public Livro(String titulo, Integer edicao) {
         this.titulo = titulo;
         this.edicao = edicao;
+    }
+
+    public Livro(String titulo, Integer edicao, Integer paginas) {
+        this(titulo, edicao);
         this.paginas = paginas;
     }
 
