@@ -1,6 +1,7 @@
 package br.com.devmedia.editora.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +31,7 @@ public class LivroDao {
     
     private JdbcTemplate template;
     private NamedParameterJdbcTemplate namedParameter;
+    private SimpleJdbcCall simpleJdbcCall;
     
     @Value("${sql.livro.findLivroWithAutores}")
     private String sqlFindLivroWithAutores;
@@ -51,6 +55,7 @@ public class LivroDao {
     public LivroDao(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
         this.namedParameter = new NamedParameterJdbcTemplate(dataSource);
+        this.simpleJdbcCall = new SimpleJdbcCall(dataSource);
     }
     
     public Livro save(Livro livro) {
@@ -137,5 +142,27 @@ public class LivroDao {
     
     public int updateWithLivroAsNamedParameter(Livro livro) {
         return this.namedParameter.update(this.sqlUpdate, new BeanPropertySqlParameterSource(livro));
+    }
+    
+    public Map<String, Object> callProcedureUppercaseTitulo(int idLivro) {
+        Map<String, Object> map = this.simpleJdbcCall
+                .withProcedureName("procedure_uppercase_titulo")
+                .execute(idLivro);
+        
+        return map;
+    }
+    
+    public List<String> callProcedureInfoLivro(int idLivro) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource("in_id", idLivro);
+        
+        Map<String, Object> info = this.simpleJdbcCall
+                .withProcedureName("procedure_info")
+                .execute(parameterSource);
+        
+        String titulo = (String) info.get("out_titulo");
+        String autor = (String) info.get("out_autor");
+        String editora = (String) info.get("out_editora");
+        
+        return Arrays.asList(titulo, autor, editora);
     }
 }

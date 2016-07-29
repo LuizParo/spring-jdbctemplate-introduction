@@ -152,4 +152,26 @@ public class LivroDaoTest {
         Assert.assertNotEquals(this.bookOne.getEdicao(), bookUpdated.getEdicao());
         Assert.assertNotEquals(this.bookOne.getPaginas(), bookUpdated.getPaginas());
     }
+    
+    @Test
+    public void shouldCallProcedureInfoLivro() {
+        Editora editoraOne = new Editora("Editora Sul Ltda.", "Porto Alegre", "contato@ed-sul.com");
+        this.editoraDao.save(editoraOne);
+        
+        List<Autor> authors = Arrays.asList(new Autor("Luciana da Silva", "lucianas@email.com", editoraOne));
+        for (Autor author : authors) {
+            this.authorDao.save(author);
+            
+            LivroAutor bookAuthor = new LivroAutor(this.bookOne.getId(), author.getId());
+            this.bookAuthorDao.save(bookAuthor);
+        }
+        
+        List<String> infos = this.bookDao.callProcedureInfoLivro(this.bookOne.getId());
+        
+        Assert.assertNotNull(infos);
+        Assert.assertFalse(infos.isEmpty());
+        for (String info : infos) {
+            Assert.assertNotNull(info);
+        }
+    }
 }
