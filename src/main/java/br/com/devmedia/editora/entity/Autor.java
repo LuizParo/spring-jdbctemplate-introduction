@@ -15,14 +15,18 @@ public class Autor {
         // default constructor
     }
 
-    public Autor(String nome, String email, Editora editora) {
+    public Autor(String nome, String email) {
         this.nome = nome;
         this.email = email;
+    }
+
+    public Autor(String nome, String email, Editora editora) {
+        this(nome, email);
         this.editora = Objects.requireNonNull(editora, "Editora must not be null!");
     }
 
     public Autor(Integer id, String nome, String email) {
-        this(nome, email, null);
+        this(nome, email);
         this.id = id;
     }
 

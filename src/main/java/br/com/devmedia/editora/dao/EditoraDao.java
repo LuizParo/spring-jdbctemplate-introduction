@@ -1,5 +1,7 @@
 package br.com.devmedia.editora.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,8 +10,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -165,5 +170,32 @@ public class EditoraDao {
             return editora;
         }
         return null;
+    }
+    
+    public void insertBatch(final List<Editora> editoras) {
+        this.template.batchUpdate(this.sqlInsert, new BatchPreparedStatementSetter() {
+            
+            @Override
+            public void setValues(PreparedStatement ps, int index) throws SQLException {
+                Editora editora = editoras.get(index);
+                ps.setString(1, editora.getRazaoSocial());
+                ps.setString(2, editora.getCidade());
+                ps.setString(3, editora.getEmail());
+            }
+            
+            @Override
+            public int getBatchSize() {
+                return editoras.size();
+            }
+        });
+    }
+    
+    public void saveBatch(final List<Editora> editoras) {
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(editoras.toArray());
+        
+        new SimpleJdbcInsert(this.template)
+                .withTableName("editora")
+                .usingColumns("razao_social", "cidade", "email")
+                .executeBatch(batch);
     }
 }

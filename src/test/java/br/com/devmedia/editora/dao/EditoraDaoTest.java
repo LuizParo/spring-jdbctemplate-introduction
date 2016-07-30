@@ -205,6 +205,53 @@ public class EditoraDaoTest {
                 Assert.assertNotNull(autor.getEditora());
             }
         }
+    }
+    
+    @Test
+    public void shouldInsertBatch() {
+        List<Editora> editoras = Arrays.asList(new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com"),
+                      new Editora("Editora São Paulo Ltda.", "São Paulo", "contato@ed-sp.com"));
         
+        this.editoraDao.insertBatch(editoras);
+        
+        List<Editora> editorasOne = this.editoraDao.findByRazaoSocial("Editora Minas Ltda.");
+        List<Editora> editorasTwo = this.editoraDao.findByRazaoSocial("Editora São Paulo Ltda.");
+        
+        Assert.assertNotNull(editorasOne);
+        Assert.assertNotNull(editorasTwo);
+        Assert.assertFalse(editorasOne.isEmpty());
+        Assert.assertFalse(editorasTwo.isEmpty());
+        
+        Editora editoraOne = editorasOne.get(0);
+        Editora editoraTwo = editorasTwo.get(0);
+        
+        Assert.assertNotNull(editoraOne);
+        Assert.assertNotNull(editoraTwo);
+        Assert.assertNotNull(editoraOne.getId());
+        Assert.assertNotNull(editoraTwo.getId());
+    }
+    
+    @Test
+    public void shouldSaveBatch() {
+        List<Editora> editoras = Arrays.asList(new Editora("Editora Minas Ltda.", "Minas Gerais", "contato@ed-minas.com"),
+                new Editora("Editora São Paulo Ltda.", "São Paulo", "contato@ed-sp.com"));
+        
+        this.editoraDao.saveBatch(editoras);
+        
+        List<Editora> editorasOne = this.editoraDao.findByRazaoSocial("Editora Minas Ltda.");
+        List<Editora> editorasTwo = this.editoraDao.findByRazaoSocial("Editora São Paulo Ltda.");
+        
+        Assert.assertNotNull(editorasOne);
+        Assert.assertNotNull(editorasTwo);
+        Assert.assertFalse(editorasOne.isEmpty());
+        Assert.assertFalse(editorasTwo.isEmpty());
+        
+        Editora editoraOne = editorasOne.get(0);
+        Editora editoraTwo = editorasTwo.get(0);
+        
+        Assert.assertNotNull(editoraOne);
+        Assert.assertNotNull(editoraTwo);
+        Assert.assertNotNull(editoraOne.getId());
+        Assert.assertNotNull(editoraTwo.getId());
     }
 }
