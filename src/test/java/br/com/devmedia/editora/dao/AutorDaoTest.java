@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,10 +109,12 @@ public class AutorDaoTest {
         Assert.assertNotEquals(this.authorOne.getEditora(), autorUpdated.getEditora());
     }
     
-    @Test
+    @Test(expected = EmptyResultDataAccessException.class)
     public void shouldRemoveAutor() {
         int rowsDeleted = this.authorDao.remove(this.authorOne);
+        
         Assert.assertEquals(1, rowsDeleted);
+        this.authorDao.findById(this.authorOne.getId());
     }
     
     @Test
@@ -142,5 +145,36 @@ public class AutorDaoTest {
         for (Livro book : authorWithBooks.getLivros()) {
             Assert.assertNotNull(book.getId());
         }
+    }
+    
+    @Test
+    public void shouldUpdateAutorUsingBatch() {
+        Autor autorToBeUpdatedOne = new Autor("José da Silva", "joses@email.com", this.editoraTwo);
+        autorToBeUpdatedOne.setId(this.authorOne.getId());
+        
+        Autor autorToBeUpdatedTwo = new Autor("Carlos da Silva", "carloss@email.com", this.editoraOne);
+        autorToBeUpdatedTwo.setId(this.authorTwo.getId());
+        
+        this.authorDao.updateBatch(Arrays.asList(autorToBeUpdatedOne, autorToBeUpdatedTwo));
+        
+        Autor autorUpdatedOne = this.authorDao.findById(this.authorOne.getId());
+        Autor autorUpdatedTwo = this.authorDao.findById(this.authorTwo.getId());
+        
+        Assert.assertNotNull(autorUpdatedOne);
+        Assert.assertNotNull(autorUpdatedTwo);
+        Assert.assertEquals(autorUpdatedOne.getId(), this.authorOne.getId());
+        Assert.assertEquals(autorUpdatedTwo.getId(), this.authorTwo.getId());
+        Assert.assertNotEquals(this.authorOne.getNome(), autorUpdatedOne.getNome());
+        Assert.assertNotEquals(this.authorTwo.getNome(), autorUpdatedTwo.getNome());
+        Assert.assertNotEquals(this.authorOne.getEmail(), autorUpdatedOne.getEmail());
+        Assert.assertNotEquals(this.authorTwo.getEmail(), autorUpdatedTwo.getEmail());
+        Assert.assertNotEquals(this.authorOne.getEditora(), autorUpdatedOne.getEditora());
+        Assert.assertNotEquals(this.authorTwo.getEditora(), autorUpdatedTwo.getEditora());
+    }
+    
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void shouldRemoveAutorUsingBatch() {
+        this.authorDao.removeBatch(Arrays.asList(this.authorOne.getId()));
+        this.authorDao.findById(this.authorOne.getId());
     }
 }

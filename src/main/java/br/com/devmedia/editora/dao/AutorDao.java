@@ -1,5 +1,7 @@
 package br.com.devmedia.editora.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -133,5 +136,41 @@ public class AutorDao {
         }
         
         return autor;
+    }
+    
+    public void updateBatch(final List<Autor> autores) {
+        this.template.batchUpdate(this.sqlUpdateAutor,
+                new BatchPreparedStatementSetter() {
+                    
+                    @Override
+                    public void setValues(PreparedStatement ps, int index) throws SQLException {
+                        Autor autor = autores.get(index);
+                        ps.setString(1, autor.getNome());
+                        ps.setString(2, autor.getEmail());
+                        ps.setInt(3, autor.getEditora().getId());
+                        ps.setInt(4, autor.getId());
+                    }
+                    
+                    @Override
+                    public int getBatchSize() {
+                        return autores.size();
+                    }
+                });
+    }
+    
+    public void removeBatch(final List<Integer> ids) {
+        this.template.batchUpdate(this.sqlDelete,
+                new BatchPreparedStatementSetter() {
+                    
+                    @Override
+                    public void setValues(PreparedStatement ps, int index) throws SQLException {
+                        ps.setInt(1, ids.get(index));
+                    }
+                    
+                    @Override
+                    public int getBatchSize() {
+                        return ids.size();
+                    }
+                });
     }
 }
