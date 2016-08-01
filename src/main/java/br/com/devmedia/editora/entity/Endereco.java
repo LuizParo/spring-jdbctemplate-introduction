@@ -5,7 +5,18 @@ public class Endereco {
     private String logradouro;
     private Integer numero;
     private String cidade;
-    private Autor autor;
+    private Integer idAutor;
+    
+    public Endereco() {
+        // default constructor
+    }
+
+    public Endereco(String logradouro, Integer numero, String cidade, Integer idAutor) {
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.cidade = cidade;
+        this.idAutor = idAutor;
+    }
 
     public Integer getId() {
         return id;
@@ -38,13 +49,13 @@ public class Endereco {
     public void setCidade(String cidade) {
         this.cidade = cidade;
     }
-
-    public Autor getAutor() {
-        return autor;
+    
+    public Integer getIdAutor() {
+        return idAutor;
     }
-
-    public void setAutor(Autor autor) {
-        this.autor = autor;
+    
+    public void setIdAutor(Integer idAutor) {
+        this.idAutor = idAutor;
     }
 
     @Override
@@ -75,6 +86,6 @@ public class Endereco {
     @Override
     public String toString() {
         return "Endereco [id=" + id + ", logradouro=" + logradouro + ", numero=" + numero + ", cidade=" + cidade
-                + ", autor=" + autor + "]";
+                + ", idAutor=" + idAutor + "]";
     }
 }
